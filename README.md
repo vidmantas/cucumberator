@@ -1,6 +1,6 @@
-Cucumberator is Cucumber extension to write steps in command line while whatching how browser responds to them:
+Cucumberator is Cucumber extension to write steps in command line, whatch how browser responds to them and save directly to your .feature file.
 
-## Usage
+## How to use
 
 * Put @cucumberize tag in front of Scenario you want to append with new steps
 * Fire up the cucumber and wait until prompt shows up
@@ -8,7 +8,11 @@ Cucumberator is Cucumber extension to write steps in command line while whatchin
 
 ## Installation
 
-If you use bundler (and you should), add 'cucumberator' to your Gemfile. Otherwise, install with
+If you use bundler (and you should), add to your Gemfile
+	
+	gem "cucumberator", :require => false
+		
+Otherwise, install with
 	
 	gem install cucumberator
 
@@ -19,11 +23,16 @@ Then require it in one of your ruby files under features/support (e.g. env.rb)
 Now put @cucumberize before any Scenario you want to fill up, for example
 
 	@javascript @cucumberize
-  	Scenario: check fancy ajax login
-    	Given user with email some@example.com
+	Scenario: check fancy ajax login
+      Given user with email some@example.com
 
-and then run this feature file and watch your console for prompt shows up.
+and then run this feature file and watch your console for prompt shows up - after all existing steps are finished.
 
-## What cucumberator DOES NOT DO
+## TODO
 
-It doesn't let you define your new step defitions yet.
+* support of multiple scenarios per feature file
+* autocomplete for available steps
+
+## SUGGESTIONS?
+
+Drop me a line or free feel to contribute!

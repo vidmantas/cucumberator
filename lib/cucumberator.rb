@@ -1,2 +1,6 @@
-require "cucumberator/version"
-require "cucumberator/cucumberize"
+require "readline"
+require "cucumberator/cucumberizator"
+
+After('@cucumberize') do |scenario|
+  Cucumberizator.new(self, scenario)
+end
