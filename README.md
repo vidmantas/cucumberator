@@ -32,7 +32,8 @@ and then run this feature file and watch your console for prompt shows up - afte
 
 * support of multiple scenarios per feature file
 * autocomplete for available steps
+* tests
 
 ## SUGGESTIONS?
 
-Drop me a line or free feel to contribute!
+Drop me a line or feel free to contribute!
