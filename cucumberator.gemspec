@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/vidmantas/cucumberator"
   s.summary     = "cucumberator-#{s.version}"
   s.description = %q{Prompt for writing Cucumber tests}
-  s.post_install_message = "(::)\nCucumberator installed! Now require cucumberator in your env.rb and place @cucumberize before the scenario you'd like to append new steps\n(::)"
+  s.post_install_message = "(::)\nCucumberator installed! Now require cucumberator in your env.rb and check README for usage examples\n(::)"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

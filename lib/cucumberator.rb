@@ -1,18 +1,20 @@
 require "readline"
-require "cucumberator/cucumberizator"
+require "cucumberator/current_step"
+require "cucumberator/writer"
 
 After('@cucumberize') do |scenario|
-  Cucumberizator.new(self, scenario)
+  Cucumberator::Writer.new(self, scenario)
 end
 
 Before do |scenario|
   @current_cucumberator_scenario = scenario
+  @current_step = Cucumberator::CurrentStep.new(scenario)
 end
 
 AfterStep do
-  @current_step = Cucumberizator.extract_current_step(@current_cucumberator_scenario)
+  @current_step.increase
 end
 
 Then /^I will write new steps$/ do
-  Cucumberizator.new(self, @current_cucumberator_scenario, @current_step)
+  Cucumberator::Writer.new(self, @current_cucumberator_scenario, @current_step.line)
 end

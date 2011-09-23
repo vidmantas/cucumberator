@@ -2,9 +2,14 @@ Cucumberator is Cucumber extension to write steps in command line, whatch how br
 
 ## How to use
 
-* Put @cucumberize tag in front of Scenario you want to append with new steps
-* Fire up the cucumber and wait until prompt shows up
-* Write a step and when happy, type 'save' to get it saved into your .feature file
+* Put @cucumberize tag in front of empty Scenario you want to append with new steps.
+* Or place step "Then I will write new steps" anywhere in scenario.
+* Fire up the cucumber and wait until prompt shows up.
+* Write a step, watch it happen on the browser! 
+
+All steps are **automatically saved** into .feature file unless it's unsuccessful. If you're unhappy with the last step, type "undo". See all commands with "help".
+
+If you have Continuous Integration, do not forget to remove cucumberator tag/step before pushing! ;-)
 
 ## Installation
 
@@ -20,17 +25,21 @@ Then require it in one of your ruby files under features/support (e.g. env.rb)
 	
 	require 'cucumberator'
 
-Now put @cucumberize before any Scenario you want to fill up, for example
+Now use special step in any place:
+
+	# ...some steps...
+	Then I will write new steps
+	# ...can be the end or other steps...
+
+or put @cucumberize before last **empty** Scenario you want to fill up, for example
 
 	@javascript @cucumberize
 	Scenario: check fancy ajax login
-      Given user with email some@example.com
 
-and then run this feature file and watch your console for prompt shows up - after all existing steps are finished.
+and then run this feature file, watch your console for prompt to show up. Enjoy writing steps on the go!
 
 ## TODO
 
-* support of multiple scenarios per feature file
 * autocomplete for available steps
 * tests
 
