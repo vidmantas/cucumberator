@@ -147,12 +147,14 @@ module Cucumberator
     end
 
     def spaces_in_last_input
-      spaces = 0
-      lines  = File.readlines(feature_file)
+      lines = File.readlines(feature_file)
 
       if step_line
-        line = lines[step_line-1]
-      else
+        line  = lines[step_line-1]
+        lines = lines.slice(0, step_line-1) if line.blank?
+      end
+
+      if line.blank?
         for l in lines.reverse
           unless l.blank?
             line = l
@@ -162,7 +164,7 @@ module Cucumberator
       end
 
       spaces = line =~ /\S/
-      spaces
+      spaces.to_i
     end
   end
 
