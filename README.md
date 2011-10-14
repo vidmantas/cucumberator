@@ -40,8 +40,8 @@ and then run this feature file, watch your console for prompt to show up. Enjoy 
 
 ## TODO
 
-* autocomplete for available steps
 * tests
+* "next" command to execute next step from scenario and stop
 
 ## SUGGESTIONS?
 

@@ -19,7 +19,18 @@ module Cucumberator
     end
 
     def set_autocomplete
-      commands = %w(exit exit-all help last-step save undo)
+      commands = %w(exit exit-all help last-step save undo next steps)
+      @steps = scenario.instance_variable_get("@current_visitor").step_mother        
+        .instance_variable_get("@support_code").step_definitions.map{|sd| sd.regexp_source }
+      
+      @steps.each do |s|
+        # remove typical start/end regexp parts
+        step = s.gsub(/^\/\^|\$\/$/,'')
+        # every step is equal, no matter if When/Then/And, so combining everything for autocomplete
+        commands << "When #{step}" << "Then #{step}" << "And #{step}" 
+      end
+
+      Readline.basic_word_break_characters = ""; # no break chars = no autobreaking for completion input
       Readline.completion_proc = proc{|s| commands.grep( /^#{Regexp.escape(s)}/ ) }
     end
 
@@ -50,6 +61,12 @@ module Cucumberator
       when "undo" 
         undo
 
+      when "next"
+        execute_next_step 
+
+      when "steps"
+        display_steps
+
       when ""
         save_empty_line
 
@@ -77,6 +94,8 @@ module Cucumberator
       puts "::   save      - force-saves last step into current feature file"
       puts "::   last-step - display last executed step (to be saved on 'save' command)"
       puts "::   undo      - remove last saved line from feature file"
+      #puts "::   next      - execute next step and stop"
+      puts "::   steps     - display available steps"
       puts "::   exit      - exits current scenario"
       puts "::   exit-all  - exists whole Cucumber feature"
       puts "::   help      - display this notification"
@@ -139,6 +158,19 @@ module Cucumberator
       self.saved_stack.pop
     end
 
+    # TODO: find a way to execute next step & stop
+    def execute_next_step
+      puts ":: Sorry, not available yet"
+    end
+
+    def display_steps
+      if @steps and @steps.size > 0
+        puts ":: Yay, you have #{@steps.size} steps in your pocket:"
+        @steps.each{|s| puts s }
+      else
+        puts ":: Sorry, no steps detected?"
+      end
+    end
 
     ## HELPERS
 
