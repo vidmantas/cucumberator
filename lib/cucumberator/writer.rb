@@ -20,8 +20,7 @@ module Cucumberator
 
     def set_autocomplete
       commands = %w(exit exit-all help last-step save undo next steps)
-      @steps = scenario.instance_variable_get("@current_visitor").step_mother        
-        .instance_variable_get("@support_code").step_definitions.map{|sd| sd.regexp_source }
+      @steps = scenario.instance_variable_get("@current_visitor").step_mother.instance_variable_get("@support_code").step_definitions.map{|sd| sd.regexp_source }
       
       @steps.each do |s|
         # remove typical start/end regexp parts
