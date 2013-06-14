@@ -1,5 +1,9 @@
 Cucumberator is Cucumber extension to write steps in command line, whatch how browser responds to them and save directly to your .feature file.
 
+[![Gem Version](https://badge.fury.io/rb/cucumberator.png)](http://badge.fury.io/rb/cucumberator)
+[![Dependency Status](https://gemnasium.com/vidmantas/cucumberator.png)](https://gemnasium.com/vidmantas/cucumberator)
+[![Code Climate](https://codeclimate.com/github/vidmantas/cucumberator.png)](https://codeclimate.com/github/vidmantas/cucumberator)
+
 ## How to use
 
 * Put @cucumberize tag in front of empty Scenario you want to append with new steps.
