@@ -11,12 +11,13 @@ Gem::Specification.new do |s|
   s.summary     = "cucumberator-#{s.version}"
   s.description = %q{Prompt for writing Cucumber tests}
   s.post_install_message = "(::)\nCucumberator installed! Now require cucumberator in your env.rb and check README for usage examples\n(::)"
+  s.licenses    = ['MIT', 'GPL-2']
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'cucumber',        '> 1.0.2'
-  s.add_dependency 'cucumber-rails',  '> 1.0.2'
+  s.add_dependency 'cucumber',        '> 1.3'
+  s.add_dependency 'cucumber-rails',  '> 1.3'
 end

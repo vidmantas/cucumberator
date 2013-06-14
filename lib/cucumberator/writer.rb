@@ -15,22 +15,31 @@ module Cucumberator
     end
 
     def check_scenario
-      raise "Sorry, no cucumberator when scenario is already failing!" if scenario.failed?
+      raise "Sorry, cucumberator is not available when scenario is already failing!" if scenario.failed?
     end
 
     def set_autocomplete
-      commands = %w(exit exit-all help last-step save undo next steps)
-      @steps = scenario.instance_variable_get("@current_visitor").step_mother.instance_variable_get("@support_code").step_definitions.map{|sd| sd.regexp_source }
-      
+      commands = %w(exit exit-all help last-step save undo next where whereami steps)
+
+      @steps = all_defined_steps
       @steps.each do |s|
         # remove typical start/end regexp parts
         step = s.gsub(/^\/\^|\$\/$/,'')
         # every step is equal, no matter if When/Then/And, so combining everything for autocomplete
-        commands << "When #{step}" << "Then #{step}" << "And #{step}" 
+        commands << "When #{step}" << "Then #{step}" << "And #{step}"
       end
 
       Readline.basic_word_break_characters = ""; # no break chars = no autobreaking for completion input
-      Readline.completion_proc = proc{|s| commands.grep( /^#{Regexp.escape(s)}/ ) }
+      Readline.completion_proc = proc { |s| commands.grep( /^#{Regexp.escape(s)}/ ) }
+    end
+
+    def current_visitor
+      @current_visitor ||= scenario.instance_variable_get("@current_visitor")
+    end
+
+    def all_defined_steps
+      support_code = current_visitor.runtime.instance_variable_get("@support_code")
+      support_code.step_definitions.map { |sd| sd.regexp_source }
     end
 
     def read_input
@@ -39,15 +48,19 @@ module Cucumberator
       read_input unless exit_flag
     end
 
+    def mark_exit(totally = false)
+      Cucumber.wants_to_quit = true if totally
+      self.exit_flag = true
+    end
+
     def parse_input(input)
       case input
       when "exit"
-        self.exit_flag = true and return
+        mark_exit and return
 
       when "exit-all"
-        Cucumber.wants_to_quit = true
-        self.exit_flag = true and return
-      
+        mark_exit(true)
+
       when "help"
         display_help
 
@@ -57,14 +70,17 @@ module Cucumberator
       when "save"
         save_last_input
 
-      when "undo" 
+      when "undo"
         undo
 
       when "next"
-        execute_next_step 
+        execute_next_step
 
       when "steps"
         display_steps
+
+      when "where", "whereami"
+        display_current_location
 
       when ""
         save_empty_line
@@ -84,7 +100,7 @@ module Cucumberator
     end
 
 
-    ## COMMANDS 
+    ## COMMANDS
 
     def display_help
       puts ":: Write a step here and watch it happen on the browser."
@@ -93,8 +109,9 @@ module Cucumberator
       puts "::   save      - force-saves last step into current feature file"
       puts "::   last-step - display last executed step (to be saved on 'save' command)"
       puts "::   undo      - remove last saved line from feature file"
-      #puts "::   next      - execute next step and stop"
+      puts "::   next      - execute next step and stop"
       puts "::   steps     - display available steps"
+      puts "::   where     - display current location in file"
       puts "::   exit      - exits current scenario"
       puts "::   exit-all  - exists whole Cucumber feature"
       puts "::   help      - display this notification"
@@ -107,22 +124,22 @@ module Cucumberator
         string_to_save = (" " * spaces_in_last_input) + last_input
         save_to_feature_file(string_to_save)
 
-        puts "Saved \"#{last_input}\" to #{File.basename(feature_file)}"
+        puts "Saved `#{last_input}` to #{File.basename(feature_file)}"
         self.last_input = nil
       end
     end
 
     def save_to_feature_file(string)
       if step_line
-        feature_file_lines = File.readlines(feature_file)
-        feature_file_lines.insert(step_line, string.to_s+$/) # $/ - default newline separator
-        File.open(feature_file, 'w'){|f| f.puts(feature_file_lines.join) }
+        lines = feature_file_lines
+        lines.insert(step_line, string.to_s+$/) # $/ - default newline separator
+        File.open(feature_file, 'w'){|f| f.puts(lines.join) }
+        self.saved_stack << [step_line, string]
         self.step_line += 1
       else
         File.open(feature_file, 'a'){|f| f.puts(string) }
+        self.saved_stack << [feature_file_lines.size, string]
       end
-
-      self.saved_stack << string
     end
 
     def save_empty_line
@@ -139,33 +156,74 @@ module Cucumberator
 
     def undo
       if saved_stack.empty?
-        puts "There's nothing to revert yet" and return
+        puts "There's nothing to revert yet"
+        return
       end
 
-      feature_file_lines = File.readlines(feature_file)
+      lines = feature_file_lines
 
-      removed = if step_line
-        self.step_line -= 1
-        feature_file_lines.delete_at(step_line)
-      else
-        feature_file_lines.pop
-      end
+      remove_line, remove_string = self.saved_stack.pop
+      lines.delete_at(remove_line)
+      File.open(feature_file, 'w') { |f| f.puts(lines.join) }
+      self.step_line -= 1
 
-      puts "Removed \"#{removed.to_s.strip}\" from #{File.basename(feature_file)}" 
-
-      File.open(feature_file, 'w'){|f| f.puts(feature_file_lines.join) }
-      self.saved_stack.pop
+      puts "Removed `#{remove_string.to_s.strip}` from #{File.basename(feature_file)}"
     end
 
-    # TODO: find a way to execute next step & stop
+    def display_current_location
+      display_line(step_line - 1)
+      display_line(step_line, current: true)
+      display_line(step_line + 1)
+    end
+
+    def display_line(line_number, opts = {})
+      lines = feature_file_lines
+      line_string = sprintf("%3d", line_number)
+
+      if opts[:current]
+        line_string << ": -> "
+      else
+        line_string << ":    "
+      end
+
+      line_string << lines[line_number]
+      puts line_string
+    end
+
     def execute_next_step
-      puts ":: Sorry, not available yet"
+      next_step = detect_next_step
+
+      if next_step
+        puts next_step.backtrace_line
+        current_visitor.visit_step(next_step)
+        self.step_line = next_step.file_colon_line.split(':').last.to_i + 1
+      else
+        puts ":: Looks like it's the end of feature file. Happy coding! <3"
+        mark_exit(true)
+      end
+    end
+
+    def detect_next_step
+      next_step = nil
+
+      scenario.steps.each do |step|
+        if step.status == :skipped and not step.backtrace_line["Then I will write new steps"]
+          next_step = step
+          break
+        end
+      end
+
+      next_step
+    end
+
+    def feature_file_lines
+      File.readlines(feature_file)
     end
 
     def display_steps
       if @steps and @steps.size > 0
         puts ":: Yay, you have #{@steps.size} steps in your pocket:"
-        @steps.each{|s| puts s }
+        @steps.each { |s| puts s }
       else
         puts ":: Sorry, no steps detected?"
       end
