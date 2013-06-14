@@ -3,7 +3,7 @@ module Cucumberator
     attr_accessor :line
 
     def initialize(scenario)
-      @scenario_sexp = scenario.instance_variable_get("@steps").to_sexp
+      @scenario_sexp = scenario.steps.to_sexp
     end
 
     def increase
