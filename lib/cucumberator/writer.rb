@@ -118,7 +118,7 @@ module Cucumberator
     end
 
     def save_last_input
-      if last_input.blank?
+      if last_input.to_s.empty?
         puts "Hm... nothing to save yet?"
       else
         string_to_save = (" " * spaces_in_last_input) + last_input
@@ -132,12 +132,12 @@ module Cucumberator
     def save_to_feature_file(string)
       if step_line
         lines = feature_file_lines
-        lines.insert(step_line, string.to_s+$/) # $/ - default newline separator
-        File.open(feature_file, 'w'){|f| f.puts(lines.join) }
+        lines.insert(step_line - 1, string.to_s+$/) # $/ - default newline separator
+        File.open(feature_file, 'w') { |f| f.puts(lines.join) }
         self.saved_stack << [step_line, string]
         self.step_line += 1
       else
-        File.open(feature_file, 'a'){|f| f.puts(string) }
+        File.open(feature_file, 'a') { |f| f.puts(string) }
         self.saved_stack << [feature_file_lines.size, string]
       end
     end
@@ -148,7 +148,7 @@ module Cucumberator
     end
 
     def execute_cucumber_step(input)
-      return if input.blank?
+      return if input.to_s.empty?
 
       self.last_input = input
       world.steps(input)
@@ -186,7 +186,7 @@ module Cucumberator
         line_string << ":    "
       end
 
-      line_string << lines[line_number]
+      line_string << lines[line_number-1].to_s
       puts line_string
     end
 
@@ -232,7 +232,7 @@ module Cucumberator
     ## HELPERS
 
     def feature_file
-      @feature_file ||= File.join(Rails.root, scenario.file_colon_line.split(":").first)
+      @feature_file ||= File.join(Dir.pwd, scenario.file_colon_line.split(":").first)
     end
 
     def spaces_in_last_input
@@ -240,12 +240,12 @@ module Cucumberator
 
       if step_line
         line  = lines[step_line-1]
-        lines = lines.slice(0, step_line-1) if line.blank?
+        lines = lines.slice(0, step_line-1) if line.to_s.empty?
       end
 
-      if line.blank?
+      if line.to_s.empty?
         for l in lines.reverse
-          unless l.blank?
+          unless line.to_s.empty?
             line = l
             break
           end

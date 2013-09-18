@@ -1,6 +1,7 @@
 require "readline"
 require "cucumberator/current_step"
 require "cucumberator/writer"
+#require 'pry'
 
 After('@cucumberize') do |scenario|
   Cucumberator::Writer.new(self, scenario)

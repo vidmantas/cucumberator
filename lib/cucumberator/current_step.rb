@@ -4,16 +4,18 @@ module Cucumberator
 
     def initialize(scenario)
       @scenario_sexp = scenario.steps.to_sexp
+      @offset = 0
+      set_line
     end
 
     def increase
-      if self.line
-        @offset += 1
-      else
-        @offset = 0
-      end
+      @offset += 1
+      set_line
+    end
 
-      self.line = @scenario_sexp[@offset][1]
+    def set_line
+      current_sexp = @scenario_sexp[@offset]
+      self.line = current_sexp[1] if current_sexp
     end
   end
 end
