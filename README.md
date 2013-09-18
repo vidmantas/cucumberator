@@ -3,6 +3,7 @@ Cucumberator is Cucumber extension to write steps in command line, whatch how br
 [![Gem Version](https://badge.fury.io/rb/cucumberator.png)](http://badge.fury.io/rb/cucumberator)
 [![Dependency Status](https://gemnasium.com/vidmantas/cucumberator.png)](https://gemnasium.com/vidmantas/cucumberator)
 [![Code Climate](https://codeclimate.com/github/vidmantas/cucumberator.png)](https://codeclimate.com/github/vidmantas/cucumberator)
+[![Build Status](https://travis-ci.org/vidmantas/cucumberator.png)](https://travis-ci.org/vidmantas/cucumberator)
 
 ## How to use
 

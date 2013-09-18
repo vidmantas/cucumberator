@@ -163,7 +163,7 @@ module Cucumberator
       lines = feature_file_lines
 
       remove_line, remove_string = self.saved_stack.pop
-      lines.delete_at(remove_line)
+      lines.delete_at(remove_line - 1)
       File.open(feature_file, 'w') { |f| f.puts(lines.join) }
       self.step_line -= 1
 
@@ -196,7 +196,7 @@ module Cucumberator
       if next_step
         puts next_step.backtrace_line
         current_visitor.visit_step(next_step)
-        self.step_line = next_step.file_colon_line.split(':').last.to_i + 1
+        self.step_line = next_step.file_colon_line.split(':').last.to_i
       else
         puts ":: Looks like it's the end of feature file. Happy coding! <3"
         mark_exit(true)
