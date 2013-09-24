@@ -237,6 +237,7 @@ module Cucumberator
 
     def spaces_in_last_input
       lines = File.readlines(feature_file)
+      line = nil
 
       if step_line
         line  = lines[step_line-1]
@@ -244,15 +245,10 @@ module Cucumberator
       end
 
       if line.to_s.empty?
-        for l in lines.reverse
-          unless line.to_s.empty?
-            line = l
-            break
-          end
-        end
+        line = lines.reverse.detect { |l| !l.to_s.empty? }
       end
 
-      spaces = line =~ /\S/
+      spaces = line.to_s =~ /\S/
       spaces.to_i
     end
   end

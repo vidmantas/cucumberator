@@ -1,4 +1,4 @@
-Feature: save empty line
+Feature: step saving
   Background:
     Given a file named "examples/support/env.rb" with:
       """
@@ -11,29 +11,29 @@ Feature: save empty line
       end
 
       """
-    Given a file named "examples/empty_nl.feature" with:
+    Given a file named "examples/cucumberize.feature" with:
       """
       Feature: example
-        Scenario: stop where exit
+        @cucumberize
+        Scenario: cucumberize
           When I do some magical stuff with 'apples'
-          Then I will write new steps
 
       """
 
-  Scenario: check if empty line is saved
-    When I run `cucumber examples/empty_nl.feature` interactively
-    And I type ""
+  Scenario: autosave after successfull execution
+    When I run `cucumber examples/cucumberize.feature` interactively
+    And I type "When I do some magical stuff with 'chairs'"
     And I type "exit"
     Then it should pass with:
       """
-      1 scenario (1 passed)
+      Saved `When I do some magical stuff with 'chairs'` to cucumberize.feature
       """
-    And the file "examples/empty_nl.feature" should contain exactly:
+    And the file "examples/cucumberize.feature" should contain exactly:
       """
       Feature: example
-        Scenario: stop where exit
+        @cucumberize
+        Scenario: cucumberize
           When I do some magical stuff with 'apples'
-
-          Then I will write new steps
+          When I do some magical stuff with 'chairs'
 
       """
