@@ -1,3 +1,5 @@
+require 'cucumberator/step_line'
+
 module Cucumberator
   class CurrentStep
     attr_accessor :line
@@ -15,7 +17,7 @@ module Cucumberator
 
     def set_line
       current_sexp = @scenario_sexp[@offset]
-      self.line = current_sexp[1] if current_sexp
+      self.line = Cucumberator::StepLine.new(current_sexp[1]) if current_sexp
     end
   end
 end

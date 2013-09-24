@@ -7,8 +7,8 @@ Cucumberator is Cucumber extension to write steps in command line, whatch how br
 
 ## How to use
 
-* Put @cucumberize tag in front of empty Scenario you want to append with new steps.
-* Or place step "Then I will write new steps" anywhere in scenario [PREFERRED]
+* Place a step "Then I will write new steps" anywhere in scenario [PREFERRED]
+* Or put @cucumberize tag in front of **last** scenario you want to append with new steps.
 * Fire up the cucumber and wait until prompt shows up.
 * Write a step, watch it happen on the browser!
 
@@ -50,10 +50,11 @@ Now use special step in any place:
 	Then I will write new steps
 	# ...can be the end or other steps...
 
-or put @cucumberize before last **empty** Scenario you want to fill up, for example
+or put @cucumberize before **last** scenario you want to fill up, for example
 
-	@javascript @cucumberize
+	@cucumberize
 	Scenario: check fancy ajax login
+		Given a user with login of "likeaboss"
 
 and then run this feature file, watch your console for prompt to show up. Enjoy writing steps on the go!
 
@@ -61,17 +62,21 @@ and then run this feature file, watch your console for prompt to show up. Enjoy 
 
 Latest cucumberator version supports:
 
+	* Cucumber >= 1.3
   * Ruby >= 1.9
-  * Cucumber >= 1.3
+  * JRuby >= 1.7.4 (1.9 mode)
+  * Rubinius >= 2.0.0.w38 (1.9 mode)
 
-## TODO
+Check for compability details on [Travis](https://travis-ci.org/vidmantas/cucumberator)
 
-* tests
-* refactor Cucumberator::Writer - too fat already
+## Want to contribute?
 
-## Suggestions?
+Fork the project, run tests with:
 
-Drop me a line or feel free to contribute!
+	bundle exec cucumber features
+
+then code, code, code and provide me a pull request <3
+...Or just fill in a [ticket](https://github.com/vidmantas/cucumberator/issues)
 
 ## Sponsors
 
