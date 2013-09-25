@@ -36,23 +36,35 @@ module Cucumberator::Commands
       @last_input = nil
     end
 
-    def save_to_feature_file(string)
+    def save_to_feature_file(line)
       if step_line
-        lines = @feature_file.lines
-        lines.insert(step_line - 1, string.to_s+$/) # $/ - default newline separator
-        @feature_file.overwrite(lines.join)
-        self.saved_stack << [step_line.number, string]
-        self.step_line.increment!
+        insert_line_to_feature_file(line)
       else
-        @feature_file.append(string)
-        self.saved_stack << [@feature_file.lines.size, string]
+        append_line_to_feature_file(line)
       end
     end
 
-    def spaces_in_last_input
+    def insert_line_to_feature_file(line)
       lines = @feature_file.lines
-      line = nil
+      lines.insert(step_line - 1, line.to_s+$/) # $/ - default newline separator
+      @feature_file.overwrite(lines.join)
 
+      self.saved_stack << [step_line.number, line]
+      self.step_line.increment!
+    end
+
+    def append_line_to_feature_file(line)
+      @feature_file.append(line)
+      self.saved_stack << [@feature_file.lines.size, line]
+    end
+
+    def spaces_in_last_input
+      line = detect_last_line(@feature_file.lines)
+      spaces = line.to_s =~ /\S/
+      spaces.to_i
+    end
+
+    def detect_last_line(lines)
       if step_line
         line  = lines[step_line-1]
         lines = lines.slice(0, step_line-1) if line.to_s.empty?
@@ -62,8 +74,7 @@ module Cucumberator::Commands
         line = lines.reverse.detect { |l| !l.to_s.empty? }
       end
 
-      spaces = line.to_s =~ /\S/
-      spaces.to_i
+      line
     end
   end
 end

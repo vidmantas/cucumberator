@@ -15,21 +15,22 @@ module Cucumberator
         elsif input == ""
           Cucumberator::Commands::Save.save_empty_line(scenario, step_line, saved_stack)
         else
-          begin
-            execute_cucumber_step(input, world)
-            Cucumberator::Commands::Save.perform(scenario, step_line, last_input, saved_stack)
-          rescue => e
-            puts e.inspect
-            puts e.backtrace.join("\n") if FULL_BACKTRACE
-          end
-
+          try_to_execute(input, scenario, step_line, world, saved_stack)
           false
         end
       end
 
+      def try_to_execute(input, scenario, step_line, world, saved_stack)
+        execute_cucumber_step(input, world)
+        Cucumberator::Commands::Save.perform(scenario, step_line, last_input, saved_stack)
+      rescue => e
+        puts e.inspect
+        puts e.backtrace.join("\n") if FULL_BACKTRACE
+      end
+
       def command_runner_for(command)
         full_klass_name = "Cucumberator::Commands::#{klass_name_for(command)}"
-        Object.const_get(full_klass_name)
+        constantize(full_klass_name)
       end
 
       def klass_name_for(command)
@@ -41,6 +42,19 @@ module Cucumberator
 
         self.last_input = input
         world.steps(input)
+      end
+
+      # copied from ActiveSupport
+      # activesupport/lib/active_support/inflector/methods.rb
+      def constantize(camel_cased_word)
+        names = camel_cased_word.split('::')
+        names.shift if names.empty? || names.first.empty?
+
+        constant = Object
+        names.each do |name|
+          constant = constant.const_defined?(name) ? constant.const_get(name) : constant.const_missing(name)
+        end
+        constant
       end
     end
   end

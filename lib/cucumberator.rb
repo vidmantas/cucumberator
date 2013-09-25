@@ -1,7 +1,7 @@
 require "readline"
 require 'cucumberator/current_step'
 require 'cucumberator/input'
-require 'pry'
+#require 'pry'
 
 After('@cucumberize') do |scenario|
   Cucumberator::Input.new(self, scenario)
