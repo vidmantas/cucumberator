@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 1.9.3"
 
-  s.add_dependency 'cucumber', '> 1.3'
+  s.add_dependency 'cucumber', '~> 1.3'
 
-  s.add_development_dependency 'aruba', '~> 0.5.3'
-  s.add_development_dependency 'pry'
+  s.add_development_dependency 'aruba', '~> 0.6'
+  s.add_development_dependency 'pry', '~> 0.10'
 end
