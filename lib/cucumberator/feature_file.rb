@@ -9,7 +9,7 @@ module Cucumberator
     end
 
     def file
-      @feature_file ||= Pathname.new(@scenario.file_colon_line.split(":").first).realpath
+      @feature_file ||= File.join(Dir.pwd, @scenario.file_colon_line.split(":").first)
     end
 
     def to_s

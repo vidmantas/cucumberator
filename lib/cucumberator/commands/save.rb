@@ -16,8 +16,7 @@ module Cucumberator::Commands
 
     def initialize(scenario, step_line, last_input, saved_stack)
       @step_line, @last_input, @saved_stack = step_line, last_input, saved_stack
-      @feature_file  = Cucumberator::FeatureFile.new(scenario)
-      @scenario_line = scenario.line - 1
+      @feature_file = Cucumberator::FeatureFile.new(scenario)
     end
 
     def save
@@ -60,19 +59,9 @@ module Cucumberator::Commands
     end
 
     def spaces_in_last_input
-      return scenario_child_spacing unless step_line
-
       line = detect_last_line(@feature_file.lines)
       spaces = line.to_s =~ /\S/
       spaces.to_i
-    end
-
-    def parent_scenario_spacing
-      @parent_depth ||= @feature_file.lines[@scenario_line].match(/^(\W+)/).to_s.size
-    end
-
-    def scenario_child_spacing
-      @child_depth  ||= parent_scenario_spacing + 2
     end
 
     def detect_last_line(lines)
