@@ -68,11 +68,11 @@ module Cucumberator::Commands
     end
 
     def parent_scenario_spacing
-      @parent_depth ||= @feature_file.lines[@scenario_line].match(/^(\W+)/).to_s.size
+      @parent_depth ||= @feature_file.lines[@scenario_line] =~ /\S/
     end
 
     def scenario_child_spacing
-      @child_depth  ||= parent_scenario_spacing + 2
+      @child_depth ||= parent_scenario_spacing + 2
     end
 
     def detect_last_line(lines)
