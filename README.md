@@ -34,7 +34,7 @@ When you're in cucumberator prompt, the following commands are available:
 
 If you use bundler (and you should), add to your Gemfile
 
-	gem "cucumberator", :require => false
+	gem "cucumberator", require: false
 
 Otherwise, install with
 
