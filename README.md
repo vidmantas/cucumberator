@@ -58,7 +58,7 @@ or put @cucumberize before **last** scenario you want to fill up, for example
 
 and then run this feature file, watch your console for prompt to show up. Enjoy writing steps on the go!
 
-## Compability
+## Compatibility
 
 Latest cucumberator version supports:
 
@@ -67,7 +67,7 @@ Latest cucumberator version supports:
 * JRuby >= 1.7.4 (1.9 mode)
 * Rubinius >= 2.0.0.w38 (1.9 mode)
 
-Check for compability details on [Travis](https://travis-ci.org/vidmantas/cucumberator)
+Check for compatibility details on [Travis](https://travis-ci.org/vidmantas/cucumberator)
 
 ## Want to contribute?
 
