@@ -6,8 +6,6 @@ module Cucumberator
 
     def initialize(environment)
       @environment = environment
-      check_for_scenario_outline!
-
       @scenario_sexp = steps.to_sexp
       @offset = 0
       set_line
@@ -20,6 +18,7 @@ module Cucumberator
     end
 
     def steps
+      check_for_scenario_outline!
       @environment.instance_variable_get(:@steps)
     end
 
