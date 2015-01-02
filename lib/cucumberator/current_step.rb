@@ -4,10 +4,22 @@ module Cucumberator
   class CurrentStep
     attr_accessor :line
 
-    def initialize(scenario)
-      @scenario_sexp = scenario.steps.to_sexp
+    def initialize(environment)
+      @environment = environment
+      @scenario_sexp = steps.to_sexp
       @offset = 0
       set_line
+    end
+
+    def check_for_scenario_outline!
+      return unless @environment.respond_to?(:scenario_outline)
+
+      @environment = @environment.scenario_outline
+    end
+
+    def steps
+      check_for_scenario_outline!
+      @environment.instance_variable_get(:@steps)
     end
 
     def increase
