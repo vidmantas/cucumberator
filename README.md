@@ -34,27 +34,37 @@ When you're in cucumberator prompt, the following commands are available:
 
 If you use bundler (and you should), add to your Gemfile
 
-	gem "cucumberator", require: false
+```ruby
+gem 'cucumberator', require: false
+```
 
 Otherwise, install with
 
-	gem install cucumberator
+```sh
+gem install cucumberator
+```
 
 Then require it in one of your ruby files under features/support (e.g. env.rb)
 
-	require 'cucumberator'
+```ruby
+require 'cucumberator'
+```
 
 Now use special step in any place:
 
-	# ...some steps...
-	Then I will write new steps
-	# ...can be the end or other steps...
+```
+# ...some steps...
+Then I will write new steps
+# ...can be the end or other steps...
+```
 
 or put @cucumberize before **last** scenario you want to fill up, for example
 
-	@cucumberize
-	Scenario: check fancy ajax login
-		Given a user with login of "likeaboss"
+```
+@cucumberize
+Scenario: check fancy ajax login
+  Given a user with login of "likeaboss"
+```
 
 and then run this feature file, watch your console for prompt to show up. Enjoy writing steps on the go!
 
@@ -65,7 +75,6 @@ Latest cucumberator version supports:
 * Cucumber >= 1.3
 * Ruby >= 1.9
 * JRuby >= 1.7.4 (1.9 mode)
-* Rubinius >= 2.0.0.w38 (1.9 mode)
 
 Check for compatibility details on [Travis](https://travis-ci.org/vidmantas/cucumberator)
 
@@ -73,7 +82,9 @@ Check for compatibility details on [Travis](https://travis-ci.org/vidmantas/cucu
 
 Fork the project, run tests with:
 
-	bundle exec cucumber features
+```sh
+bundle exec cucumber features
+```
 
 then code, code, code and provide me a pull request <3
 ...Or just fill in a [ticket](https://github.com/vidmantas/cucumberator/issues)
