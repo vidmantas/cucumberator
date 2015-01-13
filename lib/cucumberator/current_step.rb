@@ -2,33 +2,29 @@ require 'cucumberator/step_line'
 
 module Cucumberator
   class CurrentStep
-    attr_accessor :line
+    attr_accessor :line, :offset
+    attr_reader :environment
 
     def initialize(environment)
       @environment = environment
-      @scenario_sexp = steps.to_sexp
       @offset = 0
       set_line
     end
 
-    def check_for_scenario_outline!
-      return unless @environment.respond_to?(:scenario_outline)
-
-      @environment = @environment.scenario_outline
-    end
-
-    def steps
-      check_for_scenario_outline!
-      @environment.instance_variable_get(:@steps)
+    def scenario_sexp
+      @scenario_sexp ||= environment.to_sexp.select { |identificator, _| identificator == :step_invocation }
     end
 
     def increase
-      @offset += 1
+      self.offset += 1
       set_line
     end
 
+    def current_sexp
+      scenario_sexp[offset]
+    end
+
     def set_line
-      current_sexp = @scenario_sexp[@offset]
       self.line = Cucumberator::StepLine.new(current_sexp[1]) if current_sexp
     end
   end
